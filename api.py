@@ -1,7 +1,7 @@
 # coding: utf-8
 from flask import Flask, render_template, request, jsonify
 
-from api_tools import get_profile, get_search_github
+from api_tools import get_profile, get_search_github, get_github_user
 
 app = Flask(__name__)
 
@@ -20,6 +20,12 @@ def search_api():
 def login_github__api():
 	query = request.args.get('login')
 	profile = get_profile(query)
+	return jsonify(profile = profile.__dict__)
+
+@app.route('/api/v1/user_github')
+def user_github__api():
+	query = request.args.get('q')
+	profile = get_github_user(query)
 	return jsonify(profile = profile.__dict__)
 
 if __name__ == "__main__":
