@@ -4,7 +4,7 @@ from urllib import urlopen, quote_plus as urlencode
 from flask import Flask, request
 from flask_mime import Mime
 
-class Profile(object):
+class GithubProfile(object):
 	def __init__(self, json):
 		self.name = json['name']
 		self.email = json['email']
@@ -17,7 +17,13 @@ class Profile(object):
 		self.hireable = json['hireable']
 		self.location = json['location']
 
-class User_github(object):
+class StackoverflowProfile(object):
+	def __init__(self, arg):
+		self.name = json['items']['display_name']
+		
+		
+
+class UserGithub(object):
 	def __init__(self, json):
 		self.login = json['login']
 		self.profile = json['url']
@@ -29,7 +35,7 @@ def get_profile(query, as_dict = False):
 
 	profile_data = json.load(j)
 
-	profile = Profile(profile_data)
+	profile = GithubProfile(profile_data)
 
 	if as_dict:
 		return profile.__dict__
@@ -49,9 +55,9 @@ def get_search_github(query, as_dict = False):
 		for item in search_data['items']:
 
 			if as_dict:
-				search.append(User_github(item).__dict__)
+				search.append(UserGithub(item).__dict__)
 			else:
-				search.append(User_github(item))
+				search.append(UserGithub(item))
 	return search
 
 def get_github_user(query, as_dict = False):
@@ -60,7 +66,22 @@ def get_github_user(query, as_dict = False):
 	j = urlopen('https://api.github.com/users/' + urlencode(search[0].login))
 	user_data = json.load(j)
 
-	profile = Profile(user_data)
+	profile = GithubProfile(user_data)
+
+	if as_dict:
+		return profile.__dict__
+	else:
+		return profile
+
+def get_stackoverflow_user(query, as_dict=False):
+	profile = None
+	#search = urlencode(query)
+	#print 'search: ' + search
+	j = urlopen('https://api.stackexchange.com/2.2/users/' + urlencode(query) + '?order=desc&sort=reputation&site=stackoverflow')
+	#print 'j: ' + j
+	user_data = json.load(j)
+	
+	profile = StackoverflowProfile(user_data)
 
 	if as_dict:
 		return profile.__dict__

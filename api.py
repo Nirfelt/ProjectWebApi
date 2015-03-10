@@ -17,19 +17,19 @@ def search_api():
 	return jsonify(search = search)
 
 @app.route('/api/v1/login_github')
-def login_github__api():
+def login_github_api():
 	query = request.args.get('q')
 	profile = get_profile(query)
 	return jsonify(profile = profile.__dict__)
 
 @app.route('/api/v1/user_github')
-def user_github__api():
+def user_github_api():
 	query = request.args.get('q')
 	profile = get_github_user(query)
 	return jsonify(profile = profile.__dict__)
 
 @app.route('/api/v1/user_stackoverflow')
-def user_stackoverflow__api():
+def user_stackoverflow_api():
 	query = request.args.get('q')
 	profile = get_stackoverflow_user(query)
 	return jsonify(profile = profile.__dict__)
