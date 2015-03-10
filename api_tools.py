@@ -1,8 +1,6 @@
 import json
 import urllib2
 from urllib import urlopen, quote_plus as urlencode
-from flask import Flask, request
-#from flask_mime import Mime
 import gzip
 import io
 

@@ -1,5 +1,5 @@
 # coding: utf-8
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, request, jsonify
 
 from api_tools import get_profile, get_search_github, get_github_user, get_stackoverflow_user
 
