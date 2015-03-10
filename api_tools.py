@@ -22,6 +22,11 @@ class GithubProfile(object):
 class StackoverflowProfile(object):
 	def __init__(self, json):
 		self.name = json['items'][0]['display_name']
+		self.bronze_badge = json['items'][0]['badge_counts']['bronze']
+		self.silver_badge = json['items'][0]['badge_counts']['silver']
+		self.gold_badge = json['items'][0]['badge_counts']['gold']
+		self.reputation = json['items'][0]['reputation']
+		self.stackoverflow_link = json['items'][0]['link']
 		
 class UserGithub(object):
 	def __init__(self, json):
