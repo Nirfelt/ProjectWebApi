@@ -3,6 +3,8 @@ import urllib2
 from urllib import urlopen, quote_plus as urlencode
 from flask import Flask, request
 from flask_mime import Mime
+import gzip
+import io
 
 class GithubProfile(object):
 	def __init__(self, json):
@@ -18,11 +20,9 @@ class GithubProfile(object):
 		self.location = json['location']
 
 class StackoverflowProfile(object):
-	def __init__(self, arg):
-		self.name = json['items']['display_name']
+	def __init__(self, json):
+		self.name = json['items']
 		
-		
-
 class UserGithub(object):
 	def __init__(self, json):
 		self.login = json['login']
@@ -75,11 +75,13 @@ def get_github_user(query, as_dict = False):
 
 def get_stackoverflow_user(query, as_dict=False):
 	profile = None
-	#search = urlencode(query)
-	#print 'search: ' + search
+
 	j = urlopen('https://api.stackexchange.com/2.2/users/' + urlencode(query) + '?order=desc&sort=reputation&site=stackoverflow')
-	#print 'j: ' + j
-	user_data = json.load(j)
+	
+	compressed_file = io.BytesIO(j.read())
+	d = gzip.GzipFile(fileobj=compressed_file)
+
+	user_data = json.load(d)
 	
 	profile = StackoverflowProfile(user_data)
 
