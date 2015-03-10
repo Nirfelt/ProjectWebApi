@@ -2,7 +2,7 @@ import json
 import urllib2
 from urllib import urlopen, quote_plus as urlencode
 from flask import Flask, request
-from flask_mime import Mime
+#from flask_mime import Mime
 import gzip
 import io
 
@@ -21,7 +21,7 @@ class GithubProfile(object):
 
 class StackoverflowProfile(object):
 	def __init__(self, json):
-		self.name = json['items']
+		self.name = json['items'][0]['display_name']
 		
 class UserGithub(object):
 	def __init__(self, json):
