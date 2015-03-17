@@ -1,7 +1,7 @@
 # coding: utf-8
 from flask import Flask, request, jsonify
 
-from api_tools import get_profile, get_search_github, get_github_user, get_stackoverflow_user
+from api_tools import get_profile, get_search_github, get_github_user, get_stackoverflow_user, get_combined_profile
 
 app = Flask(__name__)
 
@@ -32,6 +32,13 @@ def user_github_api():
 def user_stackoverflow_api():
 	query = request.args.get('q')
 	profile = get_stackoverflow_user(query)
+	return jsonify(profile = profile.__dict__)
+
+@app.route('/api/v1/profile')
+def profile_combined_api():
+	gquery = request.args.get('g')
+	squery = request.args.get('s')
+	profile = get_combined_profile(gquery, squery)
 	return jsonify(profile = profile.__dict__)
 
 if __name__ == "__main__":

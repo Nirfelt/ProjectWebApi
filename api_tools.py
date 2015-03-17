@@ -31,6 +31,24 @@ class UserGithub(object):
 		self.login = json['login']
 		self.profile = json['url']
 
+class Profile(object):
+	def __init__(self, json):
+		self.name = json['name']
+		self.sbronze_badge = json['bronze']
+		self.ssilver_badge = json['silver']
+		self.sgold_badge = json['gold']
+		self.sreputation = json['reputation']
+		self.stackoverflow_link = json['slink']
+		self.email = json['email']
+		self.picture = json['avatar_url']
+		self.gfollowers = json['followers']
+		self.gpublic_repos = json['public_repos']
+		self.gcreated = json['created_at']
+		self.gupdated = json['updated_at']
+		self.gbio = json['bio']
+		self.hireable = json['hireable']
+		self.location = json['location']
+
 def get_profile(query, as_dict = False):
 	profile = None
 
@@ -74,7 +92,7 @@ def get_github_user(query, as_dict = False):
 	if as_dict:
 		return profile.__dict__
 	else:
-		return profile
+		return user_data
 
 def get_stackoverflow_user(query, as_dict=False):
 	profile = None
@@ -87,6 +105,37 @@ def get_stackoverflow_user(query, as_dict=False):
 	user_data = json.load(d)
 	
 	profile = StackoverflowProfile(user_data)
+
+	if as_dict:
+		return profile.__dict__
+	else:
+		return user_data
+
+def get_combined_profile(gquery, squery, as_dict=False):
+	gprofile = get_github_user(gquery)
+	sprofile = get_stackoverflow_user(squery)
+	
+	combined_profile = {}
+	
+	combined_profile['name'] = gprofile['name']
+	combined_profile['bronze'] = sprofile['items'][0]['badge_counts']['bronze']
+	combined_profile['silver'] = sprofile['items'][0]['badge_counts']['silver']
+	combined_profile['gold'] = sprofile['items'][0]['badge_counts']['gold']
+	combined_profile['reputation'] = sprofile['items'][0]['reputation']
+	combined_profile['slink'] = sprofile['items'][0]['link']
+	combined_profile['email'] = gprofile['email']
+	combined_profile['avatar_url'] = gprofile['avatar_url']
+	combined_profile['followers'] = gprofile['followers']
+	combined_profile['public_repos'] = gprofile['public_repos']
+	combined_profile['created_at'] = gprofile['created_at']
+	combined_profile['updated_at'] = gprofile['updated_at']
+	combined_profile['bio'] = gprofile['bio']
+	combined_profile['hireable'] = gprofile['hireable']
+	combined_profile['location'] = gprofile['location']
+	
+	json_data = combined_profile
+
+	profile = Profile(json_data)
 
 	if as_dict:
 		return profile.__dict__
