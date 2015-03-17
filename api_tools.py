@@ -112,27 +112,44 @@ def get_stackoverflow_user(query, as_dict=False):
 		return user_data
 
 def get_combined_profile(gquery, squery, as_dict=False):
-	gprofile = get_github_user(gquery)
-	sprofile = get_stackoverflow_user(squery)
-	
 	combined_profile = {}
-	
-	combined_profile['name'] = gprofile['name']
-	combined_profile['bronze'] = sprofile['items'][0]['badge_counts']['bronze']
-	combined_profile['silver'] = sprofile['items'][0]['badge_counts']['silver']
-	combined_profile['gold'] = sprofile['items'][0]['badge_counts']['gold']
-	combined_profile['reputation'] = sprofile['items'][0]['reputation']
-	combined_profile['slink'] = sprofile['items'][0]['link']
-	combined_profile['email'] = gprofile['email']
-	combined_profile['avatar_url'] = gprofile['avatar_url']
-	combined_profile['followers'] = gprofile['followers']
-	combined_profile['public_repos'] = gprofile['public_repos']
-	combined_profile['created_at'] = gprofile['created_at']
-	combined_profile['updated_at'] = gprofile['updated_at']
-	combined_profile['bio'] = gprofile['bio']
-	combined_profile['hireable'] = gprofile['hireable']
-	combined_profile['location'] = gprofile['location']
-	
+	if gquery != "":
+		gprofile = get_github_user(gquery)
+		combined_profile['name'] = gprofile['name']
+		combined_profile['email'] = gprofile['email']
+		combined_profile['avatar_url'] = gprofile['avatar_url']
+		combined_profile['followers'] = gprofile['followers']
+		combined_profile['public_repos'] = gprofile['public_repos']
+		combined_profile['created_at'] = gprofile['created_at']
+		combined_profile['updated_at'] = gprofile['updated_at']
+		combined_profile['bio'] = gprofile['bio']
+		combined_profile['hireable'] = gprofile['hireable']
+		combined_profile['location'] = gprofile['location']
+	else:
+		combined_profile['name'] = ""
+		combined_profile['email'] = ""
+		combined_profile['avatar_url'] = ""
+		combined_profile['followers'] = ""
+		combined_profile['public_repos'] = ""
+		combined_profile['created_at'] = ""
+		combined_profile['updated_at'] = ""
+		combined_profile['bio'] = ""
+		combined_profile['hireable'] = ""
+		combined_profile['location'] = ""
+	if squery != "":
+		sprofile = get_stackoverflow_user(squery)
+		combined_profile['bronze'] = sprofile['items'][0]['badge_counts']['bronze']
+		combined_profile['silver'] = sprofile['items'][0]['badge_counts']['silver']
+		combined_profile['gold'] = sprofile['items'][0]['badge_counts']['gold']
+		combined_profile['reputation'] = sprofile['items'][0]['reputation']
+		combined_profile['slink'] = sprofile['items'][0]['link']
+	else:
+		combined_profile['bronze'] = ""
+		combined_profile['silver'] = ""
+		combined_profile['gold'] = ""
+		combined_profile['reputation'] = ""
+		combined_profile['slink'] = ""
+
 	json_data = combined_profile
 
 	profile = Profile(json_data)
