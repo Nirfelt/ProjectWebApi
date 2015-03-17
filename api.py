@@ -1,5 +1,5 @@
 # coding: utf-8
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 
 from api_tools import get_profile, get_search_github, get_github_user, get_stackoverflow_user, get_combined_profile
 
@@ -36,10 +36,10 @@ def user_stackoverflow_api():
 
 @app.route('/api/v1/profile')
 def profile_combined_api():
-	gquery = request.args.get('g')
-	squery = request.args.get('s')
+	gquery = request.args.get('email')
+	squery = request.args.get('stackid')
 	profile = get_combined_profile(gquery, squery)
-	return jsonify(profile = profile.__dict__)
+	return render_template('rated.html')
 
 if __name__ == "__main__":
 	app.debug = True
