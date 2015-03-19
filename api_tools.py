@@ -131,8 +131,8 @@ def get_combined_profile(gquery, squery, as_dict=False):
 		combined_profile['name'] = ""
 		combined_profile['email'] = ""
 		combined_profile['avatar_url'] = ""
-		combined_profile['followers'] = ""
-		combined_profile['public_repos'] = ""
+		combined_profile['followers'] = 0
+		combined_profile['public_repos'] = 0
 		combined_profile['created_at'] = ""
 		combined_profile['updated_at'] = ""
 		combined_profile['bio'] = ""
@@ -146,10 +146,10 @@ def get_combined_profile(gquery, squery, as_dict=False):
 		combined_profile['reputation'] = sprofile['items'][0]['reputation']
 		combined_profile['slink'] = sprofile['items'][0]['link']
 	else:
-		combined_profile['bronze'] = ""
-		combined_profile['silver'] = ""
-		combined_profile['gold'] = ""
-		combined_profile['reputation'] = ""
+		combined_profile['bronze'] = 0
+		combined_profile['silver'] = 0
+		combined_profile['gold'] = 0
+		combined_profile['reputation'] = 0
 		combined_profile['slink'] = ""
 
 	combined_profile['score'] = calculate_score(combined_profile['bronze'], combined_profile['silver'], combined_profile['gold'], combined_profile['reputation'], combined_profile['public_repos'], combined_profile['followers'])
@@ -165,31 +165,39 @@ def get_combined_profile(gquery, squery, as_dict=False):
 		return profile
 
 def calculate_score(b, s, g, rep, repos, follow):
-	score = b + (2*s) + (3*g) + repos + follow + rep/100
+	if rep > 1:
+		mult = (rep + 100)/rep
+	else:
+		mult = 1
+	if follow > 1:
+		mult2 = (follow + 20)/follow
+	else:
+		mult2 =1
+	score = ((b + (2*s) + (3*g))*mult) + (repos*mult2)
 	return score
 
 def calculate_level(s):
-	if s<10:
+	if s<30:
 		return 1
-	elif s>10 and s<30:
+	elif s>30 and s<60:
 		return 2
-	elif s>30 and s<50:
+	elif s>60 and s<100:
 		return 3
-	elif s>50 and s<70:
+	elif s>100 and s<150:
 		return 4
-	elif s>70 and s<100:
+	elif s>150 and s<200:
 		return 5
-	elif s>100 and s<130:
+	elif s>200 and s<250:
 		return 6
-	elif s>130 and s<160:
+	elif s>250 and s<300:
 		return 7
-	elif s>160 and s<200:
+	elif s>300 and s<350:
 		return 8
-	elif s>200 and s<240:
+	elif s>350 and s<400:
 		return 9
-	elif s>240 and s<280:
+	elif s>400 and s<440:
 		return 10
-	elif s>280 and s<320:
+	elif s>440 and s<500:
 		return 11
-	elif s>320:
+	elif s>500:
 		return 12
