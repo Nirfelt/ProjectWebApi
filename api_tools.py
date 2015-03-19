@@ -48,6 +48,8 @@ class Profile(object):
 		self.gbio = json['bio']
 		self.hireable = json['hireable']
 		self.location = json['location']
+		self.score = json['score']
+		self.level = json['level']
 
 def get_profile(query, as_dict = False):
 	profile = None
@@ -149,6 +151,9 @@ def get_combined_profile(gquery, squery, as_dict=False):
 		combined_profile['gold'] = ""
 		combined_profile['reputation'] = ""
 		combined_profile['slink'] = ""
+
+	combined_profile['score'] = "1000"
+	combined_profile['level'] = "4"
 
 	json_data = combined_profile
 
