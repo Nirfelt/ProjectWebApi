@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-	return 'Hello World!'
+	return render_template('RateYourself.html')
 
 #API
 @app.route('/api/v1/search')
@@ -47,10 +47,6 @@ def profile_combined_api():
 		return jsonify({'error': 'Bad Request', 'code': 400, 'message': 'No stackoverflow id parameter was provided'}), 400
 	profile = get_combined_profile(gquery, squery)
 	return jsonify(profile = profile.__dict__)
-
-@app.route('/')
-def index_page():
-	return render_template('RateYourself.html')
 
 @app.route('/profile')
 def rate_page():
