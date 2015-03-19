@@ -9,6 +9,14 @@ app = Flask(__name__)
 def index():
 	return render_template('RateYourself.html')
 
+@app.route('/levels')
+def index():
+	return render_template('levels_template.html')
+
+@app.route('/api')
+def index():
+	return render_template('api_template.html')
+
 #API
 @app.route('/api/v1/search')
 def search_api():
