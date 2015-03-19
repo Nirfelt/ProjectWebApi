@@ -152,8 +152,8 @@ def get_combined_profile(gquery, squery, as_dict=False):
 		combined_profile['reputation'] = ""
 		combined_profile['slink'] = ""
 
-	combined_profile['score'] = "1000"
-	combined_profile['level'] = "4"
+	combined_profile['score'] = calculate_score(combined_profile['bronze'], combined_profile['silver'], combined_profile['gold'], combined_profile['reputation'], combined_profile['public_repos'], combined_profile['followers'])
+	combined_profile['level'] = calculate_level(combined_profile['score'])
 
 	json_data = combined_profile
 
@@ -163,3 +163,33 @@ def get_combined_profile(gquery, squery, as_dict=False):
 		return profile.__dict__
 	else:
 		return profile
+
+def calculate_score(b, s, g, rep, repos, follow):
+	score = b + (2*s) + (3*g) + repos + follow + rep/100
+	return score
+
+def calculate_level(s):
+	if s<10:
+		return 1
+	elif s>10 and s<30:
+		return 2
+	elif s>30 and s<50:
+		return 3
+	elif s>50 and s<70:
+		return 4
+	elif s>70 and s<100:
+		return 5
+	elif s>100 and s<130:
+		return 6
+	elif s>130 and s<160:
+		return 7
+	elif s>160 and s<200:
+		return 8
+	elif s>200 and s<240:
+		return 9
+	elif s>240 and s<280:
+		return 10
+	elif s>280 and s<320:
+		return 11
+	elif s>320:
+		return 12
