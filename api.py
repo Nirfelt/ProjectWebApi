@@ -38,6 +38,24 @@ def user_stackoverflow_api():
 def profile_combined_api():
 	gquery = request.args.get('email')
 	squery = request.args.get('stackid')
+	# No query was provided
+	if not gquery:
+	# Return an error and set an appropriate status code
+		return jsonify({'error': 'Bad Request', 'code': 400, 'message': 'No email parameter was provided'}), 400
+	if not squery:
+	# Return an error and set an appropriate status code
+		return jsonify({'error': 'Bad Request', 'code': 400, 'message': 'No stackoverflow id parameter was provided'}), 400
+	profile = get_combined_profile(gquery, squery)
+	return jsonify(profile = profile.__dict__)
+
+@app.route('/')
+def index_page():
+	return render_template('RateYourself.html')
+
+@app.route('/profile')
+def rate_page():
+	gquery = request.args.get('email')
+	squery = request.args.get('stackid')
 	profile = get_combined_profile(gquery, squery)
 	return render_template('rated.html')
 
