@@ -10,11 +10,11 @@ def index():
 	return render_template('RateYourself.html')
 
 @app.route('/levels')
-def index():
+def levels():
 	return render_template('levels_template.html')
 
 @app.route('/api')
-def index():
+def api():
 	return render_template('api_template.html')
 
 #API
