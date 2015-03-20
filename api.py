@@ -15,7 +15,7 @@ def levels():
 
 @app.route('/api')
 def api():
-	return render_template('api_template.html')
+	return render_template('api_template.html', test="Hejsan Annika")
 
 #API
 @app.route('/api/v1/search')
