@@ -60,12 +60,13 @@ def profile_combined_api():
 def rate_page():
 	gquery = request.args.get('email')
 	squery = request.args.get('stackid')
-	#profile = get_combined_profile(gquery, squery)
-	email = 'annika.h.magnusson@gmail.com'
-	picture = 'https://avatars.githubusercontent.com/u/6585332?v=3'
-	name = 'Annika Magnusson'
-	bio = 'A little something about me'
-	return render_template('rated.html', email=email, name=name, piture=picture, bio=bio)
+	profile = get_combined_profile(gquery, squery)
+	email = profile.email
+	picture = profile.picture
+	name = profile.name
+	bio = profile.gbio
+	level= profile.level
+	return render_template('rated.html', email=email, name=name, piture=picture, bio=bio, level=level)
 
 if __name__ == "__main__":
 	app.debug = True
