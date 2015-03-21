@@ -58,15 +58,17 @@ def profile_combined_api():
 
 @app.route('/profile')
 def rate_page():
-	gquery = request.args.get('email')
-	squery = request.args.get('stackid')
-	profile = get_combined_profile(gquery, squery)
-	email = profile.email
-	picture = profile.picture
-	name = profile.name
-	bio = profile.gbio
-	level= profile.level
-	return render_template('rated.html', email=email, name=name, piture=picture, bio=bio, level=level)
+	profile = get_combined_profile(
+		request.args.get('email'),
+		request.args.get('stackid'))
+
+	return render_template(
+		'rated.html',
+		email=profile.email,
+		name=profile.name,
+		picture=profile.picture,
+		bio=profile.gbio,
+		level=profile.level)
 
 if __name__ == "__main__":
 	app.debug = True
