@@ -61,6 +61,47 @@ def rate_page():
 	profile = get_combined_profile(
 		request.args.get('email'),
 		request.args.get('stackid'))
+	
+	level = profile.level
+	lvl_pic = ''
+	lvl_name = ''
+
+	if level == 1:
+		lvl_pic = 'static/lvl1.png'
+		lvl_name = 'Kid'
+	elif level == 2:
+		lvl_pic = 'static/lvl2.png'
+		lvl_name = 'Tourist'
+	elif level == 3:
+		lvl_pic = 'static/lvl3.png'
+		lvl_name = 'Student'
+	elif level == 4:
+		lvl_pic = 'static/lvl4.png'
+		lvl_name = 'Pirate'
+	elif level == 5:
+		lvl_pic = 'static/lvl5.png'
+		lvl_name = 'Assassin'
+	elif level == 6:
+		lvl_pic = 'static/lvl6.png'
+		lvl_name = 'Ninja'
+	elif level == 7:
+		lvl_pic = '../static/lvl7.png'
+		lvl_name = 'Knight'
+	elif level == 8:
+		lvl_pic = '../static/lvl8.png'
+		lvl_name = 'Sumo'
+	elif level == 9:
+		lvl_pic = '../static/lvl9.png'
+		lvl_name = 'Mummy'
+	elif level == 10:
+		lvl_pic = '../static/lvl10.png'
+		lvl_name = 'Batman'
+	elif level == 11:
+		lvl_pic = '../static/lvl11.png'
+		lvl_name = 'Devil'
+	elif level == 12:
+		lvl_pic = '../static/lvl12.png'
+		lvl_name = 'Death'
 
 	return render_template(
 		'rated.html',
@@ -68,7 +109,17 @@ def rate_page():
 		name=profile.name,
 		picture=profile.picture,
 		bio=profile.gbio,
-		level=profile.level)
+		level=level,
+		bronze=profile.sbronze_badge,
+		silver=profile.ssilver_badge,
+		gold=profile.sgold_badge,
+		location=profile.location,
+		reputation=profile.sreputation,
+		followers=profile.gfollowers,
+		score=profile.score,
+		repos=profile.gpublic_repos,
+		levelpicture=lvl_pic,
+		levelname=lvl_name)
 
 if __name__ == "__main__":
 	app.debug = True
