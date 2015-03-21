@@ -15,7 +15,7 @@ def levels():
 
 @app.route('/api')
 def api():
-	return render_template('api_template.html', test="Hejsan Annika")
+	return render_template('api_template.html')
 
 #API
 @app.route('/api/v1/search')
@@ -61,7 +61,7 @@ def rate_page():
 	profile = get_combined_profile(
 		request.args.get('email'),
 		request.args.get('stackid'))
-	
+
 	level = profile.level
 	lvl_pic = ''
 	lvl_name = ''
