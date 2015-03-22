@@ -16,6 +16,7 @@ class GithubProfile(object):
 		self.bio = json['bio']
 		self.hireable = json['hireable']
 		self.location = json['location']
+		self.login = json['login']
 
 class StackoverflowProfile(object):
 	def __init__(self, json):
@@ -50,6 +51,7 @@ class Profile(object):
 		self.location = json['location']
 		self.score = json['score']
 		self.level = json['level']
+		self.stars = json['stars']
 
 def get_profile(query, as_dict = False):
 	profile = None
@@ -113,6 +115,16 @@ def get_stackoverflow_user(query, as_dict=False):
 	else:
 		return user_data
 
+def get_github_stars(username):
+	count = 0
+	j = urlopen('https://api.github.com/users/' + username + "/repos")
+	repo_data = json.load(j)
+
+	for item in repo_data:
+		count = count + item['stargazers_count']
+
+	return count
+
 def get_combined_profile(gquery, squery, as_dict=False):
 	combined_profile = {}
 	if gquery != "":
@@ -127,6 +139,7 @@ def get_combined_profile(gquery, squery, as_dict=False):
 		combined_profile['bio'] = gprofile['bio']
 		combined_profile['hireable'] = gprofile['hireable']
 		combined_profile['location'] = gprofile['location']
+		combined_profile['stars'] = get_github_stars(gprofile['login'])
 	else:
 		combined_profile['name'] = ""
 		combined_profile['email'] = ""
@@ -138,6 +151,7 @@ def get_combined_profile(gquery, squery, as_dict=False):
 		combined_profile['bio'] = ""
 		combined_profile['hireable'] = ""
 		combined_profile['location'] = ""
+		combined_profile['stars'] = 0
 	if squery != "":
 		sprofile = get_stackoverflow_user(squery)
 		combined_profile['bronze'] = sprofile['items'][0]['badge_counts']['bronze']
@@ -152,7 +166,7 @@ def get_combined_profile(gquery, squery, as_dict=False):
 		combined_profile['reputation'] = 0
 		combined_profile['slink'] = ""
 
-	combined_profile['score'] = calculate_score(combined_profile['bronze'], combined_profile['silver'], combined_profile['gold'], combined_profile['reputation'], combined_profile['public_repos'], combined_profile['followers'])
+	combined_profile['score'] = calculate_score(combined_profile['bronze'], combined_profile['silver'], combined_profile['gold'], combined_profile['reputation'], combined_profile['public_repos'], combined_profile['followers'], combined_profile['stars'])
 	combined_profile['level'] = calculate_level(combined_profile['score'])
 
 	json_data = combined_profile
@@ -164,7 +178,7 @@ def get_combined_profile(gquery, squery, as_dict=False):
 	else:
 		return profile
 
-def calculate_score(b, s, g, rep, repos, follow):
+def calculate_score(b, s, g, rep, repos, follow, stars):
 	if rep > 1:
 		mult = (rep + 100)/rep
 	else:
@@ -173,7 +187,7 @@ def calculate_score(b, s, g, rep, repos, follow):
 		mult2 = (follow + 20)/follow
 	else:
 		mult2 =1
-	score = ((b + (2*s) + (3*g))*mult) + (repos*mult2)
+	score = ((b + (2*s) + (3*g))*mult) + repos + (stars*mult2)
 	return score
 
 def calculate_level(s):
