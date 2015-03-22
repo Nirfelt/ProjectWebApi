@@ -118,6 +118,7 @@ def rate_page():
 		followers=profile.gfollowers,
 		score=profile.score,
 		repos=profile.gpublic_repos,
+		stars=profile.stars,
 		levelpicture=lvl_pic,
 		levelname=lvl_name)
 
