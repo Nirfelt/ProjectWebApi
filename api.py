@@ -65,43 +65,69 @@ def rate_page():
 	level = profile.level
 	lvl_pic = ''
 	lvl_name = ''
+	width = ''
+	height = ''
 
 	if level == 1:
 		lvl_pic = 'static/lvl1.png'
 		lvl_name = 'Kid'
+		width = '240'
+		height = '300'
 	elif level == 2:
 		lvl_pic = 'static/lvl2.png'
 		lvl_name = 'Tourist'
+		width = '240'
+		height = '300'
 	elif level == 3:
 		lvl_pic = 'static/lvl3.png'
 		lvl_name = 'Student'
+		width = '240'
+		height = '300'
 	elif level == 4:
 		lvl_pic = 'static/lvl4.png'
 		lvl_name = 'Pirate'
+		width = '240'
+		height = '300'
 	elif level == 5:
 		lvl_pic = 'static/lvl5.png'
 		lvl_name = 'Assassin'
+		width = '240'
+		height = '300'
 	elif level == 6:
 		lvl_pic = 'static/lvl6.png'
 		lvl_name = 'Ninja'
+		width = '240'
+		height = '300'
 	elif level == 7:
 		lvl_pic = '../static/lvl7.png'
 		lvl_name = 'Knight'
+		width = '230'
+		height = '300'
 	elif level == 8:
 		lvl_pic = '../static/lvl8.png'
 		lvl_name = 'Sumo'
+		width = '240'
+		height = '300'
 	elif level == 9:
 		lvl_pic = '../static/lvl9.png'
 		lvl_name = 'Mummy'
+		width = '240'
+		height = '300'
 	elif level == 10:
 		lvl_pic = '../static/lvl10.png'
 		lvl_name = 'Batman'
+		width = '230'
+		height = '300'
 	elif level == 11:
 		lvl_pic = '../static/lvl11.png'
 		lvl_name = 'Devil'
+		width = '240'
+		height = '300'
 	elif level == 12:
 		lvl_pic = '../static/lvl12.png'
 		lvl_name = 'Death'
+		width = '300'
+		height = '300'
 
 	return render_template(
 		'rated.html',
@@ -120,7 +146,9 @@ def rate_page():
 		repos=profile.gpublic_repos,
 		stars=profile.stars,
 		levelpicture=lvl_pic,
-		levelname=lvl_name)
+		levelname=lvl_name,
+		w=width,
+		h=height)
 
 if __name__ == "__main__":
 	app.debug = True
