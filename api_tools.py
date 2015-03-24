@@ -52,20 +52,8 @@ class Profile(object):
 		self.score = json['score']
 		self.level = json['level']
 		self.stars = json['stars']
-
-def get_profile(query, as_dict = False):
-	profile = None
-
-	j = urlopen('https://api.github.com/users/' + urlencode(query))
-
-	profile_data = json.load(j)
-
-	profile = GithubProfile(profile_data)
-
-	if as_dict:
-		return profile.__dict__
-	else:
-		return profile
+		self.github_found = json['github']
+		self.stackoverflow_found = json['stackoverflow']
 
 def get_search_github(query, as_dict = False):
 	search = []
@@ -74,26 +62,27 @@ def get_search_github(query, as_dict = False):
 	req = urllib2.Request(url, None, headers=headers)
 	j = urllib2.urlopen(req)
 	search_data = json.load(j)
+	if search_data['total_count'] > 0:
+		if len(search_data['items']) > 0:
+			for item in search_data['items']:
 
-	if len(search_data['items']) > 0:
-
-		for item in search_data['items']:
-
-			if as_dict:
-				search.append(UserGithub(item).__dict__)
-			else:
-				search.append(UserGithub(item))
+				if as_dict:
+					search.append(UserGithub(item).__dict__)
+				else:
+					search.append(UserGithub(item))
 	return search
 
 def get_github_user(query, as_dict = False):
 	profile = None
 	search = get_search_github(query)
-	j = urlopen('https://api.github.com/users/' + urlencode(search[0].login))
-	user_data = json.load(j)
+	if len(search) > 0:
+		j = urlopen('https://api.github.com/users/' + urlencode(search[0].login))
+		user_data = json.load(j)
 
-	profile = GithubProfile(user_data)
+		profile = GithubProfile(user_data)
 
-	return user_data
+		return user_data
+	return None
 
 def get_stackoverflow_user(query):
 	profile = None
@@ -104,10 +93,11 @@ def get_stackoverflow_user(query):
 	d = gzip.GzipFile(fileobj=compressed_file)
 
 	user_data = json.load(d)
-
-	profile = StackoverflowProfile(user_data)
-
-	return user_data
+	try:
+		profile = StackoverflowProfile(user_data)
+		return user_data
+	except:
+		return None
 
 def get_github_stars(username):
 	count = 0
@@ -123,42 +113,37 @@ def get_combined_profile(gquery, squery, as_dict=False):
 	combined_profile = {}
 	if gquery != "":
 		gprofile = get_github_user(gquery)
-		combined_profile['name'] = gprofile['name']
-		combined_profile['email'] = gprofile['email']
-		combined_profile['avatar_url'] = gprofile['avatar_url']
-		combined_profile['followers'] = gprofile['followers']
-		combined_profile['public_repos'] = gprofile['public_repos']
-		combined_profile['created_at'] = gprofile['created_at']
-		combined_profile['updated_at'] = gprofile['updated_at']
-		combined_profile['bio'] = gprofile['bio']
-		combined_profile['hireable'] = gprofile['hireable']
-		combined_profile['location'] = gprofile['location']
-		combined_profile['stars'] = get_github_stars(gprofile['login'])
+		if gprofile != None:
+			combined_profile['name'] = gprofile['name']
+			combined_profile['email'] = gprofile['email']
+			combined_profile['avatar_url'] = gprofile['avatar_url']
+			combined_profile['followers'] = gprofile['followers']
+			combined_profile['public_repos'] = gprofile['public_repos']
+			combined_profile['created_at'] = gprofile['created_at']
+			combined_profile['updated_at'] = gprofile['updated_at']
+			combined_profile['bio'] = gprofile['bio']
+			combined_profile['hireable'] = gprofile['hireable']
+			combined_profile['location'] = gprofile['location']
+			combined_profile['stars'] = get_github_stars(gprofile['login'])
+			combined_profile['github'] = True
+		else:
+			combined_profile = set_default_values_github(combined_profile)
 	else:
-		combined_profile['name'] = ""
-		combined_profile['email'] = ""
-		combined_profile['avatar_url'] = ""
-		combined_profile['followers'] = 0
-		combined_profile['public_repos'] = 0
-		combined_profile['created_at'] = ""
-		combined_profile['updated_at'] = ""
-		combined_profile['bio'] = ""
-		combined_profile['hireable'] = ""
-		combined_profile['location'] = ""
-		combined_profile['stars'] = 0
+		combined_profile = set_default_values_github(combined_profile)
+
 	if squery != "":
 		sprofile = get_stackoverflow_user(squery)
-		combined_profile['bronze'] = sprofile['items'][0]['badge_counts']['bronze']
-		combined_profile['silver'] = sprofile['items'][0]['badge_counts']['silver']
-		combined_profile['gold'] = sprofile['items'][0]['badge_counts']['gold']
-		combined_profile['reputation'] = sprofile['items'][0]['reputation']
-		combined_profile['slink'] = sprofile['items'][0]['link']
+		if sprofile != None:
+			combined_profile['bronze'] = sprofile['items'][0]['badge_counts']['bronze']
+			combined_profile['silver'] = sprofile['items'][0]['badge_counts']['silver']
+			combined_profile['gold'] = sprofile['items'][0]['badge_counts']['gold']
+			combined_profile['reputation'] = sprofile['items'][0]['reputation']
+			combined_profile['slink'] = sprofile['items'][0]['link']
+			combined_profile['stackoverflow'] = True
+		else:
+			combined_profile = set_default_values_stackoverflow(combined_profile)
 	else:
-		combined_profile['bronze'] = 0
-		combined_profile['silver'] = 0
-		combined_profile['gold'] = 0
-		combined_profile['reputation'] = 0
-		combined_profile['slink'] = ""
+		combined_profile = set_default_values_stackoverflow(combined_profile)
 
 	combined_profile['score'] = calculate_score(combined_profile['bronze'], combined_profile['silver'], combined_profile['gold'], combined_profile['reputation'], combined_profile['public_repos'], combined_profile['followers'], combined_profile['stars'])
 	combined_profile['level'] = calculate_level(combined_profile['score'])
@@ -171,6 +156,30 @@ def get_combined_profile(gquery, squery, as_dict=False):
 		return profile.__dict__
 	else:
 		return profile
+
+def set_default_values_github(combined_profile):
+	combined_profile['name'] = ""
+	combined_profile['email'] = ""
+	combined_profile['avatar_url'] = ""
+	combined_profile['followers'] = 0
+	combined_profile['public_repos'] = 0
+	combined_profile['created_at'] = ""
+	combined_profile['updated_at'] = ""
+	combined_profile['bio'] = ""
+	combined_profile['hireable'] = ""
+	combined_profile['location'] = ""
+	combined_profile['stars'] = 0
+	combined_profile['github'] = False
+	return combined_profile
+
+def set_default_values_stackoverflow(combined_profile):
+	combined_profile['bronze'] = 0
+	combined_profile['silver'] = 0
+	combined_profile['gold'] = 0
+	combined_profile['reputation'] = 0
+	combined_profile['slink'] = ""
+	combined_profile['stackoverflow'] = False
+	return combined_profile
 
 def calculate_score(b, s, g, rep, repos, follow, stars):
 	if rep > 1:
