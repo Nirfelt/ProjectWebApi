@@ -15,7 +15,7 @@ def levels():
 
 @app.route('/api')
 def api():
-	return render_template('api_template.html')
+	return render_template('api_template.html', address='http://127.0.0.1:5000/')
 
 @app.route('/profile')
 def rate_page():
